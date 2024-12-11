@@ -3326,30 +3326,44 @@ footer {
 
 /* /styles/globals.css */
 .network-error-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Center the content vertically */
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  }
-  
-  .network-error {
-    background-color: #ffcc00;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 18px;
-    max-width: 80%; /* Adjust width */
-    margin: 0 auto;
-  }
-  
-  .network-error span {
-    font-weight: bold;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center the content vertically */
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: Add a semi-transparent background */
+}
+
+.network-error {
+  background-color: #ffcc00;
+  color: black;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%; /* Adjust the width of the error box */
+  max-width: 600px; /* Max width to avoid overly wide messages */
+  text-align: center;
+  font-size: 18px;
+}
+
+.dismiss-btn {
+  background: none;
+  border: none;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.dismiss-btn:hover {
+  text-decoration: underline;
+}
+
   
