@@ -79,6 +79,10 @@ export default function Home() {
   //const [loading, setLoading] = useState(true);
 
   // Function to handle verification via gplinks.com
+
+   const [showVerifyDialog, setShowVerifyDialog] = useState(false);
+
+  // Function to handle verification via gplinks.com
   const handleVerify = async () => {
     const apiKey = "e5bf7301b4ad442d45481de99fd656a182ec6507"; // Your gplinks API Key
     const callbackUrl = `${window.location.origin}/?verified=true`;
@@ -119,6 +123,10 @@ export default function Home() {
         const token = localStorage.getItem("token");
         const expiry = localStorage.getItem("expiry");
 
+        console.log("Token:", token);
+        console.log("Expiry:", expiry);
+        console.log("Verified param:", isVerifiedParam);
+
         if (isVerifiedParam === "true") {
           // Generate and store a new token valid for 24 hours
           const newToken = Math.random().toString(36).substr(2);
@@ -132,8 +140,9 @@ export default function Home() {
           setIsVerified(true);
           setLoading(false);
         } else {
-          // If no valid token is found
+          // No valid token or expired token, show the verification dialog
           setLoading(false);
+          setShowVerifyDialog(true);
         }
       } catch (error) {
         console.error("Error in useEffect:", error);
@@ -147,6 +156,30 @@ export default function Home() {
   if (loading) {
     return <p>Loading...</p>;
   }
+
+  if (showVerifyDialog) {
+    // Show the verification dialog if not verified
+    return (
+      <div style={{ textAlign: "center", padding: "50px" }}>
+        <h1>Verification Required</h1>
+        <p>You must verify your account to access the homepage.</p>
+        <button
+          onClick={handleVerify}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            background: "#0070f3",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+          }}
+        >
+          Verify via gplinks.com
+        </button>
+      </div>
+    );
+}
   return (
 
 
