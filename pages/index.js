@@ -4,6 +4,7 @@ export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showVerifyDialog, setShowVerifyDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Function to handle verification via gplinks.com
   const handleVerify = async () => {
@@ -26,15 +27,15 @@ export default function HomePage() {
       const data = await response.json();
       console.log(data); // Log the response for debugging
 
-      if (data.status === "success" && data.shortenedUrl) {
+      if (response.ok && data.status === "success" && data.shortenedUrl) {
         // Redirect user to gplinks verification page
         window.location.href = data.shortenedUrl;
       } else {
-        alert("Failed to generate verification URL. Please try again.");
+        throw new Error("Failed to generate verification URL. Please try again.");
       }
     } catch (error) {
       console.error("Error generating gplinks URL:", error);
-      alert("An error occurred. Please try again later.");
+      setErrorMessage("An error occurred while trying to generate the verification URL. Please try again later.");
     }
   };
 
@@ -70,6 +71,7 @@ export default function HomePage() {
         }
       } catch (error) {
         console.error("Error in useEffect:", error);
+        setErrorMessage("An error occurred while checking the verification status. Please try again later.");
         setLoading(false); // Done loading even on error
       }
     };
@@ -87,6 +89,7 @@ export default function HomePage() {
       <div style={{ textAlign: "center", padding: "50px" }}>
         <h1>Verification Required</h1>
         <p>You must verify your account to access the homepage.</p>
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} {/* Display error message */}
         <button
           onClick={handleVerify}
           style={{
