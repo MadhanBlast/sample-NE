@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router"; // Import useRouter from next/router
 
 const API_TOKEN = "e5bf7301b4ad442d45481de99fd656a182ec6507"; // Replace with your actual API token
 const VERIFY_EXPIRY_MINUTES = 2; // Set expiry time for testing (2 minutes for now)
@@ -7,6 +8,8 @@ const App = () => {
   const [isVerified, setIsVerified] = useState(false); // State for verification status
   const [error, setError] = useState(""); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading state
+
+  const router = useRouter(); // Initialize useRouter hook
 
   useEffect(() => {
     // Check if token exists in localStorage and is valid
@@ -44,6 +47,7 @@ const App = () => {
 
         if (storedToken && storedExpiry && new Date().getTime() < parseInt(storedExpiry, 10)) {
           setIsVerified(true); // Verification successful
+          router.push("/home"); // Redirect to the homepage (you can change "/home" to your desired path)
         } else {
           setError("Verification failed. Please try again.");
         }
