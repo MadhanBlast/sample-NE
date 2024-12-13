@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);  // Default to false to prevent showing the homepage immediately
+  const [isVerified, setIsVerified] = useState(false);  // Default is false to prevent showing homepage until verification
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -31,8 +31,8 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Mark the user as verified after successful verification
-        setIsVerified(true); // Update state to show homepage after verification
+        // Now mark the user as verified after successful verification
+        setIsVerified(true); // This will trigger a re-render and show the homepage
       } else {
         throw new Error(result.message || "Failed to verify.");
       }
