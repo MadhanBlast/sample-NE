@@ -6,7 +6,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+  const tokenExpiryTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+// 2 minutes in milliseconds
 
   // Function to handle verification
   const handleVerification = async () => {
