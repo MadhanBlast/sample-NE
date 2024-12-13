@@ -92,4 +92,4 @@ export default function HomePage() {
       <p>You have successfully verified your account.</p>
     </div>
   );
-   }
+}
