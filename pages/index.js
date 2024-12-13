@@ -7,7 +7,6 @@ const HomePage = () => {
 
   useEffect(() => {
     console.log("[LOG] Checking token validity on app load...");
-    // Check if a valid token exists in localStorage
     const storedToken = localStorage.getItem('verificationToken');
     if (storedToken) {
       const { expiry } = JSON.parse(storedToken);
@@ -15,9 +14,8 @@ const HomePage = () => {
         console.log("[LOG] Token found and is still valid.");
         setIsVerified(true);
         return;
-      } else {
-        console.log("[LOG] Token found but expired.");
       }
+      console.log("[LOG] Token found but expired.");
     } else {
       console.log("[LOG] No token found in localStorage.");
     }
@@ -30,9 +28,10 @@ const HomePage = () => {
     console.log("[LOG] Initiating verification process...");
     const apiKey = "e5bf7301b4ad442d45481de99fd656a182ec6507";
     const callbackUrl = `${window.location.origin}/?verified=true`;
+    console.log("[DEBUG] API Key:", apiKey);
+    console.log("[DEBUG] Callback URL:", callbackUrl);
 
     try {
-      console.log("[LOG] Sending POST request to gplinks API...");
       const response = await fetch("https://gplinks.in/api", {
         method: "POST",
         headers: {
@@ -44,21 +43,20 @@ const HomePage = () => {
         }),
       });
 
-      console.log("[LOG] Awaiting API response...");
       const data = await response.json();
       console.log("[LOG] API Response:", data);
 
       if (response.ok && data.status === "success" && data.shortenedUrl) {
         console.log("[LOG] Verification URL generated successfully:", data.shortenedUrl);
         setIsLoading(false);
-        window.location.href = data.shortenedUrl; // Redirect to the verification URL
+        window.location.href = data.shortenedUrl;
       } else {
         console.error("[ERROR] API did not return a successful status:", data);
         setIsLoading(false);
         setErrorMessage(data.message || "Failed to generate verification URL.");
       }
     } catch (error) {
-      console.error("[ERROR] An error occurred during the API call:", error);
+      console.error("[ERROR] Fetch failed:", error);
       setIsLoading(false);
       setErrorMessage("An error occurred while contacting the server. Please try again later.");
     }
@@ -66,7 +64,7 @@ const HomePage = () => {
 
   const handleTokenVerification = () => {
     console.log("[LOG] User redirected back with verification. Saving token...");
-    const expiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 24 hours
+    const expiryTime = new Date().getTime() + 24 * 60 * 60 * 1000;
     localStorage.setItem('verificationToken', JSON.stringify({ token: 'valid-token', expiry: expiryTime }));
     setIsVerified(true);
   };
@@ -88,7 +86,11 @@ const HomePage = () => {
         <div>
           <h1>Verification Required</h1>
           <p>Please verify your account to access the homepage.</p>
-          {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+          {errorMessage && (
+            <div style={{ color: 'red', marginTop: '10px' }}>
+              {errorMessage}
+            </div>
+          )}
           {isLoading ? (
             <div>Loading...</div>
           ) : (
