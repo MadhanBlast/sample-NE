@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);  // Start with 'false' to ensure the homepage isn't displayed prematurely
+  const [isVerified, setIsVerified] = useState(false);  // Default to false
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [checkedVerification, setCheckedVerification] = useState(false);  // New state to track if verification check has been completed
+  const [checkedVerification, setCheckedVerification] = useState(false);  // Flag to check if verification was completed
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -19,7 +19,6 @@ export default function HomePage() {
     try {
       const response = await fetch(apiUrl);
 
-      // Check if the response is okay
       if (!response.ok) {
         throw new Error(`Server responded with ${response.status}`);
       }
@@ -32,8 +31,8 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Now mark the user as verified after successful verification
-        setIsVerified(true); // This will trigger a re-render and show the homepage
+        // Mark user as verified after successful verification
+        setIsVerified(true);
       } else {
         throw new Error(result.message || "Failed to verify.");
       }
@@ -50,6 +49,7 @@ export default function HomePage() {
     const token = localStorage.getItem("gplinks_token");
     const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
 
+    // Checking token validity and expiry
     if (token && tokenTimestamp) {
       const elapsedTime = Date.now() - parseInt(tokenTimestamp);
 
@@ -62,10 +62,10 @@ export default function HomePage() {
       }
     }
 
-    setCheckedVerification(true);  // Set this flag to true after checking the verification status
+    setCheckedVerification(true);  // Flag as completed after checking
   }, []);
 
-  // Render loading state while checking verification
+  // If the verification check is still in progress
   if (!checkedVerification) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
@@ -90,7 +90,7 @@ export default function HomePage() {
   // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage!</h1>
+      <h1>Welcome to the Homepage</h1>
       <p>You have successfully verified your account.</p>
     </div>
   );
