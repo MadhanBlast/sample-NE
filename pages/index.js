@@ -1,98 +1,86 @@
  // 2 minutes in milliseconds
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);  // Default to false
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [checkedVerification, setCheckedVerification] = useState(false);  // Flag to check if verification was completed
+const API_TOKEN = "e5bf7301b4ad442d45481de99fd656a182ec6507"; // Replace with your actual API token
+const VERIFY_EXPIRY_MINUTES = 2; // Set expiry time for testing (2 minutes for now)
 
-  const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+const App = () => {
+  const [isVerified, setIsVerified] = useState(false); // State for verification status
+  const [error, setError] = useState(""); // State for error messages
+  const [loading, setLoading] = useState(false); // State for loading state
 
-  // Function to handle verification
+  useEffect(() => {
+    // Check if token exists in localStorage and is valid
+    const storedToken = localStorage.getItem("token");
+    const storedExpiry = localStorage.getItem("tokenExpiry");
+
+    if (storedToken && storedExpiry && new Date().getTime() < parseInt(storedExpiry, 10)) {
+      setIsVerified(true); // Token is valid, so allow direct access
+    }
+  }, []);
+
   const handleVerification = async () => {
-    setLoading(true);
-    setErrorMessage(""); // Clear previous errors
-
-    const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(window.location.origin)}`;
+    setError(""); // Reset any previous error
+    setLoading(true); // Start loading
 
     try {
-      const response = await fetch(apiUrl);
+      // Send request to GPLinks API
+      const response = await fetch(
+        `https://api.gplinks.com/api?api=${API_TOKEN}&url=https://google.com`
+      );
+      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
+      // Validate API response
+      if (data.status === "success" && data.shortenedUrl) {
+        const token = data.shortenedUrl; // Use the returned shortened URL as the token
+        const expiry = new Date().getTime() + VERIFY_EXPIRY_MINUTES * 60 * 1000; // Set expiry (e.g., 2 minutes)
 
-      const result = await response.json();
+        // Store the token and expiry in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("tokenExpiry", expiry.toString());
 
-      // Check the result status
-      if (result.status === "success" && result.shortenedUrl) {
-        // Save token and timestamp to localStorage
-        localStorage.setItem("gplinks_token", "valid");
-        localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
+        // Revalidate by checking if token and expiry exist
+        const storedToken = localStorage.getItem("token");
+        const storedExpiry = localStorage.getItem("tokenExpiry");
 
-        // Mark user as verified after successful verification
-        setIsVerified(true);
+        if (storedToken && storedExpiry && new Date().getTime() < parseInt(storedExpiry, 10)) {
+          setIsVerified(true); // Verification successful
+        } else {
+          setError("Verification failed. Please try again.");
+        }
       } else {
-        throw new Error(result.message || "Failed to verify.");
+        setError("Verification failed. Please try again."); // Invalid response
       }
     } catch (error) {
-      console.error("Error during verification:", error);
-      setErrorMessage(error.message || "An error occurred while contacting the server.");
+      console.error("Verification error:", error);
+      setError("An error occurred while contacting the server. Please try again later.");
     } finally {
-      setLoading(false);
+      setLoading(false); // End loading
     }
   };
 
-  // Check if the user is verified (token logic with expiry check)
-  useEffect(() => {
-    const token = localStorage.getItem("gplinks_token");
-    const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
-
-    // Checking token validity and expiry
-    if (token && tokenTimestamp) {
-      const elapsedTime = Date.now() - parseInt(tokenTimestamp);
-
-      if (elapsedTime < tokenExpiryTime) {
-        setIsVerified(true); // Set verified state if token is valid
-      } else {
-        // Token expired, clear the token
-        localStorage.removeItem("gplinks_token");
-        localStorage.removeItem("gplinks_token_timestamp");
-      }
-    }
-
-    setCheckedVerification(true);  // Flag as completed after checking
-  }, []);
-
-  // If the verification check is still in progress
-  if (!checkedVerification) {
+  // Show the homepage content if the user is verified
+  if (isVerified) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
-        <h1>Loading verification status...</h1>
+      <div>
+        <h1>Welcome to the Homepage!</h1>
+        <p>You have successfully verified your account.</p>
+        {/* Homepage content goes here */}
       </div>
     );
   }
 
-  // Render the verification dialog if not verified or token expired
-  if (!isVerified) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
-        <h1>Please verify your account to access the homepage</h1>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Verifying..." : "Verify via GPLinks"}
-        </button>
-      </div>
-    );
-  }
-
-  // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage!</h1>
-      <p>You have successfully verified your account.</p>
+      <h1>Please verify your account to access the homepage.</h1>
+      {loading ? (
+        <p>Loading...</p> // Show loading state while verifying
+      ) : (
+        <button onClick={handleVerification}>Verify via GPLinks</button>
+      )}
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Show error message if any */}
     </div>
   );
-}
+};
+
+export default App;
