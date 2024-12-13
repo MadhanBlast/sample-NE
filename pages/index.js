@@ -1,78 +1,60 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function App() {
-  const [tokenValid, setTokenValid] = useState(false); // State to track token validity
-  const [loading, setLoading] = useState(true); // State to show loading spinner
+function App() {
+  const [isVerified, setIsVerified] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Function to check token validity
-  const checkToken = () => {
-    const storedToken = localStorage.getItem("userToken");
-    const storedExpiry = localStorage.getItem("tokenExpiry");
-
-    if (storedToken && storedExpiry) {
-      const currentTime = Date.now();
-      if (currentTime < parseInt(storedExpiry)) {
-        setTokenValid(true);
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Token expired or doesn't exist
-    setTokenValid(false);
-    setLoading(false);
-  };
-
-  // Function to handle verification
-  const handleVerify = async () => {
-    try {
-      setLoading(true);
-
-      const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-      const apiUrl = `https://api.gplinks.com/api?api=${apiToken}`;
-
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-
-      if (data.status === "success") {
-        const expiryTime = Date.now() + 2 * 60 * 1000; // 2 minutes for testing
-        localStorage.setItem("userToken", data.shortenedUrl);
-        localStorage.setItem("tokenExpiry", expiryTime.toString());
-        setTokenValid(true);
-      } else {
-        alert("Verification failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during verification:", error);
-      alert("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Check token on component load
   useEffect(() => {
-    checkToken();
+    const token = localStorage.getItem("token");
+    const expiry = localStorage.getItem("expiry");
+
+    if (token && expiry && Date.now() < Number(expiry)) {
+      setIsVerified(true); // Token is valid
+    } else {
+      setIsVerified(false); // Token is expired or not available
+    }
   }, []);
 
-  // Render loading spinner
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // Function to handle verification
+  const handleVerification = async () => {
+    const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507"; // Replace with your API Token
+    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=https://google.com`;
 
-  // Render verification screen or homepage
+    try {
+      const response = await fetch(apiUrl);
+      const result = await response.json();
+
+      if (result.status === "success") {
+        // Save token and expiry in localStorage
+        localStorage.setItem("token", result.shortenedUrl);
+        localStorage.setItem("expiry", Date.now() + 2 * 60 * 1000); // 2 minutes expiry for testing
+        setIsVerified(true); // Mark as verified
+      } else {
+        throw new Error(result.message || "Verification failed. Please try again.");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
   return (
     <div>
-      {!tokenValid ? (
-        <div>
-          <h1>Please verify your account to access the homepage.</h1>
-          <button onClick={handleVerify}>Verify via GPLinks</button>
-        </div>
-      ) : (
+      {isVerified ? (
         <div>
           <h1>Welcome to the Homepage!</h1>
           <p>You have successfully verified your account.</p>
+        </div>
+      ) : (
+        <div>
+          <h1>Verification Required</h1>
+          <p>Please verify your account to access the homepage.</p>
+          <button onClick={handleVerification}>Verify</button>
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </div>
       )}
     </div>
   );
 }
+
+export default App;
