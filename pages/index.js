@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);  // Default to false to prevent showing the homepage immediately
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -13,7 +13,6 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    // In-app verification process, no external URL redirection needed
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(window.location.origin)}`;
 
     try {
@@ -33,7 +32,7 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
         // Mark the user as verified after successful verification
-        setIsVerified(true); // Now update state after successful verification
+        setIsVerified(true); // Update state to show homepage after verification
       } else {
         throw new Error(result.message || "Failed to verify.");
       }
@@ -47,6 +46,7 @@ export default function HomePage() {
 
   // Check if the user is verified (token logic with expiry check)
   useEffect(() => {
+    // Check localStorage when the component mounts to determine if the user is already verified
     const token = localStorage.getItem("gplinks_token");
     const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
 
@@ -59,12 +59,11 @@ export default function HomePage() {
         // Token expired, clear the token
         localStorage.removeItem("gplinks_token");
         localStorage.removeItem("gplinks_token_timestamp");
-        setIsVerified(false);
       }
     }
   }, []);
 
-  // Render the dialog if not verified or token expired
+  // Render the verification dialog if not verified or token expired
   if (!isVerified) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
