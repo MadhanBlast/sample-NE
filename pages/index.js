@@ -13,10 +13,8 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    // Set the callback URL to the homepage (current site's root)
-    const callbackUrl = window.location.origin; // This will dynamically set it to the current domain's root
-
-    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
+    // In-app verification process, no external URL redirection needed
+    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(window.location.origin)}`;
 
     try {
       const response = await fetch(apiUrl);
@@ -34,10 +32,10 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Redirect the user to the homepage
-        window.location.href = result.shortenedUrl;
+        // Set verification state to true
+        setIsVerified(true);
       } else {
-        throw new Error(result.message || "Failed to generate the verification link.");
+        throw new Error(result.message || "Failed to verify.");
       }
     } catch (error) {
       console.error("Error during verification:", error);
