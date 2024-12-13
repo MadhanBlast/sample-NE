@@ -4,7 +4,7 @@ export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  
   // Function to handle verification
   const handleVerification = async () => {
     setLoading(true);
@@ -26,7 +26,12 @@ export default function HomePage() {
 
       // Check the result status
       if (result.status === "success" && result.shortenedUrl) {
-        // Redirect the user to the shortened URL
+        // Store the token and timestamp in localStorage
+        const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Token expiration time (24 hours)
+        localStorage.setItem("gplinks_token", result.shortenedUrl);
+        localStorage.setItem("token_expiration", expirationTime.toString());
+
+        // Redirect to the shortened URL for verification
         window.location.href = result.shortenedUrl;
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
@@ -39,11 +44,23 @@ export default function HomePage() {
     }
   };
 
-  // Check if the user is verified (token logic can be added here)
+  // Check if the token is valid and not expired
   useEffect(() => {
     const token = localStorage.getItem("gplinks_token");
-    if (token) {
-      setIsVerified(true);
+    const expirationTime = localStorage.getItem("token_expiration");
+
+    if (token && expirationTime) {
+      const currentTime = new Date().getTime();
+
+      // If the token is still valid (within 24 hours)
+      if (currentTime < expirationTime) {
+        setIsVerified(true);
+      } else {
+        // If the token has expired, remove it and prompt for verification
+        localStorage.removeItem("gplinks_token");
+        localStorage.removeItem("token_expiration");
+        setIsVerified(false);
+      }
     }
   }, []);
 
