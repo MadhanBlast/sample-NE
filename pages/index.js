@@ -14,7 +14,9 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const callbackUrl = "https://google.com"; // This can be your app's homepage URL, but we're not redirecting externally
+    // Set the callback URL to the homepage (current site's root)
+    const callbackUrl = window.location.origin; // This will dynamically set it to the current domain's root
+
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
 
     try {
@@ -33,8 +35,8 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Update the state to indicate successful verification
-        setIsVerified(true);
+        // Redirect the user to the homepage
+        window.location.href = result.shortenedUrl;
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
@@ -78,9 +80,9 @@ export default function HomePage() {
     );
   }
 
-  // Render the homepage content if verified
+  // Render the homepage if verified
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
+    <div>
       <h1>Welcome to the Homepage!</h1>
       <p>You have successfully verified your account.</p>
     </div>
