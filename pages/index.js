@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);  // Default is false to prevent showing homepage until verification
+  const [isVerified, setIsVerified] = useState(false);  // Start with 'false' to ensure the homepage isn't displayed prematurely
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [checkedVerification, setCheckedVerification] = useState(false);  // New state to track if verification check has been completed
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -46,7 +47,6 @@ export default function HomePage() {
 
   // Check if the user is verified (token logic with expiry check)
   useEffect(() => {
-    // Check localStorage when the component mounts to determine if the user is already verified
     const token = localStorage.getItem("gplinks_token");
     const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
 
@@ -61,7 +61,18 @@ export default function HomePage() {
         localStorage.removeItem("gplinks_token_timestamp");
       }
     }
+
+    setCheckedVerification(true);  // Set this flag to true after checking the verification status
   }, []);
+
+  // Render loading state while checking verification
+  if (!checkedVerification) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
+        <h1>Loading verification status...</h1>
+      </div>
+    );
+  }
 
   // Render the verification dialog if not verified or token expired
   if (!isVerified) {
@@ -79,7 +90,7 @@ export default function HomePage() {
   // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage</h1>
+      <h1>Welcome to the Homepage!</h1>
       <p>You have successfully verified your account.</p>
     </div>
   );
