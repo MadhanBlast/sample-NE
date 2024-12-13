@@ -32,7 +32,7 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Set verification state to true
+        // Mark the user as verified without redirecting externally
         setIsVerified(true);
       } else {
         throw new Error(result.message || "Failed to verify.");
