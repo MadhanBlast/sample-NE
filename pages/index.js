@@ -4,6 +4,7 @@ export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showOverlay, setShowOverlay] = useState(true); // Overlay visibility
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -49,6 +50,7 @@ export default function HomePage() {
       localStorage.setItem("gplinks_token", "valid");
       localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
       setIsVerified(true);
+      setShowOverlay(false); // Hide the overlay
 
       // Remove the "verified" parameter from the URL
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -61,34 +63,57 @@ export default function HomePage() {
 
         if (elapsedTime < tokenExpiryTime) {
           setIsVerified(true);
+          setShowOverlay(false); // Hide the overlay
         } else {
           // Token expired, clear the token
           localStorage.removeItem("gplinks_token");
           localStorage.removeItem("gplinks_token_timestamp");
           setIsVerified(false);
+          setShowOverlay(true); // Show the overlay
         }
+      } else {
+        setShowOverlay(true); // Show the overlay
       }
     }
   }, []);
 
-  // Render the dialog if not verified or token expired
-  if (!isVerified) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
-        <h1>Please verify your account to access the homepage</h1>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Generating Verification Link..." : "Verify via GPLinks"}
-        </button>
-      </div>
-    );
-  }
-
-  // Render the homepage if verified
   return (
-    <div>
-      <h1>Welcome to the Homepage!</h1>
-      <p>You have successfully verified your account.</p>
+    <div style={{ position: "relative" }}>
+      {/* Overlay */}
+      {showOverlay && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: "white",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <h1>Please verify your account to access the homepage</h1>
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          <button
+            onClick={handleVerification}
+            disabled={loading}
+            style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}
+          >
+            {loading ? "Generating Verification Link..." : "Verify via GPLinks"}
+          </button>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div style={{ visibility: showOverlay ? "hidden" : "visible" }}>
+        <h1>Welcome to the Homepage!</h1>
+        <p>You have successfully verified your account.</p>
+      </div>
     </div>
   );
 }
