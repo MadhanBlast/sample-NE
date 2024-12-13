@@ -13,7 +13,9 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const callbackUrl = "https://google.com"; // Replace with your actual callback URL
+    // Set the callback URL to the homepage (current site's root)
+    const callbackUrl = window.location.origin; // This will dynamically set it to the current domain's root
+
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
 
     try {
@@ -32,7 +34,7 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Redirect the user to the shortened URL
+        // Redirect the user to the homepage
         window.location.href = result.shortenedUrl;
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
