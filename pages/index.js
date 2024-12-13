@@ -32,8 +32,8 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Mark the user as verified without redirecting externally
-        setIsVerified(true);
+        // Mark the user as verified after successful verification
+        setIsVerified(true); // Now update state after successful verification
       } else {
         throw new Error(result.message || "Failed to verify.");
       }
@@ -54,7 +54,7 @@ export default function HomePage() {
       const elapsedTime = Date.now() - parseInt(tokenTimestamp);
 
       if (elapsedTime < tokenExpiryTime) {
-        setIsVerified(true);
+        setIsVerified(true); // Set verified state if token is valid
       } else {
         // Token expired, clear the token
         localStorage.removeItem("gplinks_token");
