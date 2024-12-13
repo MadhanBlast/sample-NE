@@ -79,7 +79,7 @@ export default function HomePage() {
   // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage!</h1>
+      <h1>Welcome to the Homepage</h1>
       <p>You have successfully verified your account.</p>
     </div>
   );
