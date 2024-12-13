@@ -1,12 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showOverlay, setShowOverlay] = useState(true);
-
-  const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+ // 2 minutes in milliseconds
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
