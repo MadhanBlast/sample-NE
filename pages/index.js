@@ -91,7 +91,7 @@ export default function HomePage() {
   return (
     <div>
       <h1>Welcome to the Homepge!</h1>
-      <p>You have successfully verified your account.</p>
+      <p>You have successfully verified account.</p>
     </div>
   );
 }
