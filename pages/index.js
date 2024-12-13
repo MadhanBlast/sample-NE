@@ -8,60 +8,47 @@ export default function HomePage() {
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
   // Function to handle verification
-  const handleVerification = async () => {
-    setLoading(true);
+  const handleVerification = () => {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    // Set the callback URL to the homepage (current site's root)
-    const callbackUrl = window.location.origin; // This will dynamically set it to the current domain's root
+    const callbackUrl = `${window.location.origin}/?verified=true`; // Return to the current domain with a "verified" flag
 
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
 
-    try {
-      const response = await fetch(apiUrl);
-
-      // Check if the response is okay
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      // Check the result status
-      if (result.status === "success" && result.shortenedUrl) {
-        // Save token and timestamp to localStorage
-        localStorage.setItem("gplinks_token", "valid");
-        localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
-
-        // Redirect the user to the homepage
-        window.location.href = result.shortenedUrl;
-      } else {
-        throw new Error(result.message || "Failed to generate the verification link.");
-      }
-    } catch (error) {
-      console.error("Error during verification:", error);
-      setErrorMessage(error.message || "An error occurred while contacting the server.");
-    } finally {
-      setLoading(false);
-    }
+    // Open the verification URL in a new tab or window
+    window.open(apiUrl, "_blank");
   };
 
   // Check if the user is verified (token logic with expiry check)
   useEffect(() => {
-    const token = localStorage.getItem("gplinks_token");
-    const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
+    // Check for the "verified" query parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isReturnedVerified = urlParams.get("verified") === "true";
 
-    if (token && tokenTimestamp) {
-      const elapsedTime = Date.now() - parseInt(tokenTimestamp);
+    if (isReturnedVerified) {
+      // Save token and timestamp to localStorage
+      localStorage.setItem("gplinks_token", "valid");
+      localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
+      setIsVerified(true);
 
-      if (elapsedTime < tokenExpiryTime) {
-        setIsVerified(true);
-      } else {
-        // Token expired, clear the token
-        localStorage.removeItem("gplinks_token");
-        localStorage.removeItem("gplinks_token_timestamp");
-        setIsVerified(false);
+      // Remove the "verified" parameter from the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      const token = localStorage.getItem("gplinks_token");
+      const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
+
+      if (token && tokenTimestamp) {
+        const elapsedTime = Date.now() - parseInt(tokenTimestamp);
+
+        if (elapsedTime < tokenExpiryTime) {
+          setIsVerified(true);
+        } else {
+          // Token expired, clear the token
+          localStorage.removeItem("gplinks_token");
+          localStorage.removeItem("gplinks_token_timestamp");
+          setIsVerified(false);
+        }
       }
     }
   }, []);
@@ -82,7 +69,7 @@ export default function HomePage() {
   // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage!</h1>
+      <h1>Welcome to the Homepage</h1>
       <p>You have successfully verified your account.</p>
     </div>
   );
