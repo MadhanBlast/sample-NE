@@ -5,6 +5,7 @@ export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -35,14 +36,8 @@ export default function HomePage() {
         // Update the state immediately
         setIsVerified(true);
 
-        // Get the current URL to redirect back after the shortened link
-        const currentUrl = window.location.href;
-
         // Redirect the user to the shortened URL
         window.location.href = result.shortenedUrl;
-
-        // Store the current URL in localStorage
-        localStorage.setItem("currentUrl", currentUrl);
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
@@ -72,13 +67,12 @@ export default function HomePage() {
       }
     }
 
-    // After verification, check if there's a stored URL to redirect back to
-    const storedUrl = localStorage.getItem("currentUrl");
-    if (storedUrl) {
-      window.location.href = storedUrl; // Redirect back to the stored URL
-      localStorage.removeItem("currentUrl"); // Clear stored URL after redirect
+    // Automatically redirect back to the current URL if already verified
+    if (isVerified && !redirecting) {
+      setRedirecting(true);
+      window.location.href = window.location.href;
     }
-  }, []);
+  }, [isVerified, redirecting]);
 
   // Render the dialog if not verified or token expired
   if (!isVerified) {
@@ -104,7 +98,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify GPLinks"}
+          {loading ? "Verifying..." : "Verify via GPLinks"}
         </button>
       </div>
     );
