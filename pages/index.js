@@ -66,13 +66,7 @@ export default function HomePage() {
         setIsVerified(false);
       }
     }
-
-    // Automatically redirect back to the current URL if already verified
-    if (isVerified && !redirecting) {
-      setRedirecting(true);
-      window.location.href = window.location.href;
-    }
-  }, [isVerified, redirecting]);
+  }, []);
 
   // Render the dialog if not verified or token expired
   if (!isVerified) {
@@ -98,7 +92,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify via GPLinks"}
+          {loading ? "Verifying..." : "Verify vias"}
         </button>
       </div>
     );
