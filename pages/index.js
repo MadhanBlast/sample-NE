@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router'; // Import the Next.js Router
 
-export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);
-import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
