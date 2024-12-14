@@ -1,12 +1,11 @@
- // 2 minutes in milliseconds
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'; // Import the Next.js Router
 
 export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter();
+  const router = useRouter(); // Get the router object
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -34,11 +33,14 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Update the state immediately to reflect the verification status
-        setIsVerified(true);
+        // Simulate delay of 10 seconds before setting verified status
+        setTimeout(() => {
+          // After 10 seconds, set the verified state to true
+          setIsVerified(true);
 
-        // Use Next.js router to navigate to the homepage after verification
-        router.push("/"); // Navigate to the homepage (adjust the route as needed)
+          // Use Next.js router to navigate to the homepage after verification
+          router.push("/"); // Navigate to the homepage (adjust the route as needed)
+        }, 10000); // 10 seconds delay
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
@@ -93,7 +95,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verifs"}
+          {loading ? "Verifying..." : "Verify via GPLinks"}
         </button>
       </div>
     );
