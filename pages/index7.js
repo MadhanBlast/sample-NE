@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import Link from "next/link";
 export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false); // Renamed from `loading`
@@ -93,8 +93,9 @@ export default function HomePage() {
   // Render the homepage if verified
   return (
     <div>
-      <h1>Welcome to the Homepage!</h1>
-      <p>You have successfully verified your account.</p>
+      <Link href="/index1">
+        <span>Visit HomePage</span>
+      </Link>
     </div>
   );
 }
