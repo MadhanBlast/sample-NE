@@ -36,9 +36,9 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Simulate the verification process and update the state after a delay
+        // Simultaneously start a 10-second timer to update verification state
         setTimeout(() => {
-          setIsVerified(true); // Set verification to true after the delay
+          setIsVerified(true); // Set verification to true after 10 seconds
 
           // Redirect to the homepage (or other page) after verification
           router.push("/"); // Adjust the route if necessary
@@ -97,7 +97,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify via GPLinks"}
+          {loading ? "Verifying..." : "GPLinks"}
         </button>
       </div>
     );
