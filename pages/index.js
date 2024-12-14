@@ -14,7 +14,7 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const callbackUrl = "https://yourwebsite.com/home"; // Replace with your actual callback URL
+    const callbackUrl = "/"; // Replace with your actual callback URL
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
 
     try {
