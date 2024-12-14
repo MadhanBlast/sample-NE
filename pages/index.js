@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false); // Start with false, but we update based on the check
+  const [isVerified, setIsVerified] = useState(null); // null indicates the verification status is unknown
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -75,7 +75,7 @@ export default function HomePage() {
 
   // Show loading until the verification state is confirmed
   if (isVerified === null) {
-    return null; // or a loading spinner
+    return <div>Loading...</div>; // or a loading spinner
   }
 
   // Render the dialog if not verified or token expired
@@ -85,7 +85,7 @@ export default function HomePage() {
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Generating Verification Link..." : "Verify vias"}
+          {loading ? "Generating Verification Link..." : "Verify via GPLinks"}
         </button>
       </div>
     );
