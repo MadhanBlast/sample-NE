@@ -1,12 +1,12 @@
  // 2 minutes in milliseconds
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router'; // Import the Next.js Router
+import { useRouter } from 'next/router';
 
 export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter(); // Get the router object
+  const router = useRouter();
 
   const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
 
@@ -93,7 +93,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify via GPLinks"}
+          {loading ? "Verifying..." : "Verifs"}
         </button>
       </div>
     );
