@@ -24,7 +24,7 @@ export default function Home() {
   
 
   // fetch data with usehook
-  const { alldata, loading } = useFectchData("/api/getmovies");
+  const { alldata, loading } = useFetchData("/api/getmovies");
 
   const [wloading, setWLoading] = useState(true);
 
