@@ -33,11 +33,14 @@ export default function HomePage() {
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Update the state immediately
+        // Update the state immediately before redirect
         setIsVerified(true);
 
-        // Redirect the user to the shortened URL
-        window.location.href = result.shortenedUrl;
+        // Delay the redirect to allow state update
+        setRedirecting(true);
+        setTimeout(() => {
+          window.location.href = result.shortenedUrl;
+        }, 500); // Delay by 500ms
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
@@ -92,7 +95,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify vias"}
+          {loading ? "Verifying..." : "Verify via GPLinks"}
         </button>
       </div>
     );
