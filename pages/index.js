@@ -36,10 +36,13 @@ export default function HomePage() {
         // Update the state immediately before redirect
         setIsVerified(true);
 
+        // Force a reload to ensure the state is updated
+        window.location.reload();
+        
         // Delay the redirect to allow state update
         setRedirecting(true);
         setTimeout(() => {
-          window.location.href = result.shortenedUrl;
+          window.location.href = result.shortenedUrl; // Redirect to the shortened URL
         }, 500); // Delay by 500ms
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
@@ -61,7 +64,7 @@ export default function HomePage() {
       const elapsedTime = Date.now() - parseInt(tokenTimestamp);
 
       if (elapsedTime < tokenExpiryTime) {
-        setIsVerified(true);
+        setIsVerified(true); // Set as verified if the token is valid
       } else {
         // Token expired, clear the token
         localStorage.removeItem("gplinks_token");
@@ -95,7 +98,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify via GPLinks"}
+          {loading ? "Verifying..." : "Verify via"}
         </button>
       </div>
     );
