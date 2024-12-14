@@ -14,8 +14,7 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const callbackUrl = "https://noble-stevena-madhan-4575059f.koyeb.app/"; // Replace with your actual callback URL
-    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
+    const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(window.location.href)}`;
 
     try {
       const response = await fetch(apiUrl);
@@ -36,8 +35,14 @@ export default function HomePage() {
         // Update the state immediately
         setIsVerified(true);
 
+        // Get the current URL to redirect back after the shortened link
+        const currentUrl = window.location.href;
+
         // Redirect the user to the shortened URL
         window.location.href = result.shortenedUrl;
+
+        // Store the current URL in localStorage
+        localStorage.setItem("currentUrl", currentUrl);
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
@@ -66,6 +71,13 @@ export default function HomePage() {
         setIsVerified(false);
       }
     }
+
+    // After verification, check if there's a stored URL to redirect back to
+    const storedUrl = localStorage.getItem("currentUrl");
+    if (storedUrl) {
+      window.location.href = storedUrl; // Redirect back to the stored URL
+      localStorage.removeItem("currentUrl"); // Clear stored URL after redirect
+    }
   }, []);
 
   // Render the dialog if not verified or token expired
@@ -92,7 +104,7 @@ export default function HomePage() {
             cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {loading ? "Verifying..." : "Verify via GPLinks"}
+          {loading ? "Verifying..." : "Verify GPLinks"}
         </button>
       </div>
     );
