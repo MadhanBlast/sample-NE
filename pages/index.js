@@ -1,6 +1,6 @@
 
 import WelcomeAnimation from "@/components/WelcomeAnimation";
-import useFectchData from "@/hooks/useFetchData";
+import useFetchData from "@/hooks/useFetchData";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
