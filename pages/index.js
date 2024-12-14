@@ -16,7 +16,7 @@ import { FaClapperboard } from "react-icons/fa6";
 import genres from "./genre/[genre]";
 import category from "./genre";
 import Spinner from "@/components/Spinner";
-import VerifyComponent from "../components/VerifyComponent";
+//import VerifyComponent from "../components/VerifyComponent";
 
 
 
