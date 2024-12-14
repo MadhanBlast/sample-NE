@@ -81,14 +81,14 @@ export default function Home() {
 
 
   const [isVerified, setIsVerified] = useState(false);
-  const [loading1, setLoading1] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false); // Renamed from `loading`
   const [errorMessage, setErrorMessage] = useState("");
 
-  const tokenExpiryTime = 10 * 60 * 1000; // 2 minutes in milliseconds
+  const tokenExpiryTime = 10 * 60 * 1000; // 10 minutes in milliseconds
 
   // Function to handle verification
   const handleVerification = async () => {
-    setLoading(true);
+    setIsVerifying(true); // Start verification process
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
@@ -120,7 +120,7 @@ export default function Home() {
       console.error("Error during verification:", error);
       setErrorMessage(error.message || "An error occurred while contacting the server.");
     } finally {
-      setLoading(false);
+      setIsVerifying(false); // End verification process
     }
   };
 
@@ -130,7 +130,7 @@ export default function Home() {
     const tokenTimestamp = localStorage.getItem("gplinks_token_timestamp");
 
     if (token && tokenTimestamp) {
-      const elapsedTime = Date.now() - parseInt(tokenTimestamp);
+      const elapsedTime = Date.now() - parseInt(tokenTimestamp, 10);
 
       if (elapsedTime < tokenExpiryTime) {
         setIsVerified(true);
@@ -146,16 +146,28 @@ export default function Home() {
   // Render the dialog if not verified or token expired
   if (!isVerified) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          textAlign: "center",
+        }}
+      >
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading1} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading1 ? "Verifying..." : "Verify GPLinks"}
+        <button
+          onClick={handleVerification}
+          disabled={isVerifying}
+          style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}
+        >
+          {isVerifying ? "Verifying..." : "Verify GPLink"}
         </button>
       </div>
     );
-}
-
+  }
 
   return (
 
