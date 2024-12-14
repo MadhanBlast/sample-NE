@@ -81,7 +81,7 @@ export default function Home() {
 
 
   const [isVerified, setIsVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const tokenExpiryTime = 10 * 60 * 1000; // 2 minutes in milliseconds
@@ -149,8 +149,8 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Verifying..." : "Verify GPLinks"}
+        <button onClick={handleVerification} disabled={loading1} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
+          {loading1 ? "Verifying..." : "Verify GPLinks"}
         </button>
       </div>
     );
