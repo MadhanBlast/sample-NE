@@ -14,7 +14,7 @@ export default function HomePage() {
     setErrorMessage(""); // Clear previous errors
 
     const apiToken = "e5bf7301b4ad442d45481de99fd656a182ec6507";
-    const callbackUrl = "/"; // Replace with your actual callback URL
+    const callbackUrl = "https://noble-stevena-madhan-4575059f.koyeb.app/"; // Replace with your actual callback URL
     const apiUrl = `https://api.gplinks.com/api?api=${apiToken}&url=${encodeURIComponent(callbackUrl)}`;
 
     try {
@@ -32,6 +32,9 @@ export default function HomePage() {
         // Save token and timestamp to localStorage
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
+
+        // Update the state immediately
+        setIsVerified(true);
 
         // Redirect the user to the shortened URL
         window.location.href = result.shortenedUrl;
@@ -68,10 +71,27 @@ export default function HomePage() {
   // Render the dialog if not verified or token expired
   if (!isVerified) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          textAlign: "center",
+        }}
+      >
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
+        <button
+          onClick={handleVerification}
+          disabled={loading}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+        >
           {loading ? "Verifying..." : "Verify via GPLinks"}
         </button>
       </div>
