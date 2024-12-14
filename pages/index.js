@@ -29,18 +29,20 @@ export default function HomePage() {
 
       // Check the result status
       if (result.status === "success" && result.shortenedUrl) {
+        // Open the GPLinks URL immediately in a new tab
+        window.open(result.shortenedUrl, "_blank");
+
         // Save token and timestamp to localStorage
         localStorage.setItem("gplinks_token", "valid");
         localStorage.setItem("gplinks_token_timestamp", Date.now().toString());
 
-        // Simulate delay of 10 seconds before setting verified status
+        // Simulate the verification process and update the state after a delay
         setTimeout(() => {
-          // After 10 seconds, set the verified state to true
-          setIsVerified(true);
+          setIsVerified(true); // Set verification to true after the delay
 
-          // Use Next.js router to navigate to the homepage after verification
-          router.push("/"); // Navigate to the homepage (adjust the route as needed)
-        }, 10000); // 10 seconds delay
+          // Redirect to the homepage (or other page) after verification
+          router.push("/"); // Adjust the route if necessary
+        }, 10000); // Wait for 10 seconds before updating state
       } else {
         throw new Error(result.message || "Failed to generate the verification link.");
       }
