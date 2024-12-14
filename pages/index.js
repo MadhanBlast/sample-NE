@@ -78,9 +78,11 @@ export default function HomePage() {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Generating Verification Link..." : "VerifyGPLinks"}
-        </button>
+        {!isVerified && (
+          <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
+            {loading ? "Generating Verification Link..." : "Verify"}
+          </button>
+        )}
       </div>
     );
   }
