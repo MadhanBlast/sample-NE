@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router'; // Import the Next.js Router
 
-
 export default function HomePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const tokenExpiryTime = 2 * 60 * 1000; // 2 minutes in milliseconds
+  const tokenExpiryTime = 5 * 60 * 1000; // 5 minutes in milliseconds
 
   // Function to handle verification
   const handleVerification = async () => {
@@ -80,7 +79,7 @@ export default function HomePage() {
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-          {loading ? "Generating Verification Link..." : "Verify via GPLinks"}
+          {loading ? "Generating Verification Link..." : "VerifyGPLinks"}
         </button>
       </div>
     );
