@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router'; // Import the Next.js Router
 
 export default function HomePage() {
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(false); // Start with false, but we update based on the check
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -68,9 +67,16 @@ export default function HomePage() {
           localStorage.removeItem("gplinks_token_timestamp");
           setIsVerified(false);
         }
+      } else {
+        setIsVerified(false);
       }
     }
   }, []);
+
+  // Show loading until the verification state is confirmed
+  if (isVerified === null) {
+    return null; // or a loading spinner
+  }
 
   // Render the dialog if not verified or token expired
   if (!isVerified) {
@@ -78,11 +84,9 @@ export default function HomePage() {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center" }}>
         <h1>Please verify your account to access the homepage</h1>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        {!isVerified && (
-          <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-            {loading ? "Generating Verification Link..." : "Verify"}
-          </button>
-        )}
+        <button onClick={handleVerification} disabled={loading} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
+          {loading ? "Generating Verification Link..." : "Verify vias"}
+        </button>
       </div>
     );
   }
